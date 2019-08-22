@@ -270,7 +270,7 @@ public class YueSeFu {
 缓存的应用非常广泛，比如常见的CPU缓存，数据库缓存，浏览器缓存，缓存的大小有限，当缓存用满的时候，哪些数据应该被保留，哪些数据应该被清理，这就由缓存淘汰算法来决定，常见的策略有：
 
 * 先进先出FIFO
-* 最少只用策略
+* 最少使用策略
 * 最近最少使用策略
 
 **使用链表实现LRU缓存淘汰算法：** （*LRU*, Least Recently Used）：最近最少使用*LRU*法是依据各块使用的情况， 总是选择那个最长时间未被使用的块替换。我的实现的思路是：维护一个固定长度的单链表，当有新的数据访问的时候，我们从头开始遍历链表：
@@ -282,8 +282,6 @@ public class YueSeFu {
 
 **哨兵节点的链表**：即为带有虚拟头接点的链表。
 
-
-
 除此之外，如果你的代码对内存的使用非常苛刻，那数组就更适合你，因为链表中的每个结点都需要消耗额外的存储空间去存储一份指向下一个结点的指针，所以内存消耗会翻倍。而且，对链表进行频繁的内存申请和释放，容易造成内存碎片，如果是 Java 语言，就有可能会导致频繁的GC（Garbage Collection，垃圾回收）
 
 ### 链表和数组的对比
@@ -294,7 +292,57 @@ CPU在从内存读取数据的时候，会先把读取到的数据加载到CPU�
 
 对于数组来说，存储空间是连续的，所以在加载某个下标的时候可以把以后的几个下标元素也加载到CPU缓存这样执行速度会快于存储空间不连续的链表存储。
 
-**思考** 判断一个字符串是否是回文结构，并计算其时间复杂度和空间复杂度
+**思考** 判断一个字符串是否是回文结构，并计算其时间复杂度和空间复杂度   ***（这里暂时只是给出一种写法）***
+
+~~~java
+public class IsPalindromeList {
+    public static class Node{
+        private int value;
+        private Node next;
+        public Node(int data){
+            this.value = data;
+        }
+    }
+
+    // need extra space:定义一个stack，连快慢指针都不需要设置
+    public static boolean isPalindroneOne(Node head){
+        Stack<Node> stack = new Stack<>();
+        Node cur = head;
+        while(cur != null){
+            stack.push(cur);
+            cur = cur.next;
+        }
+        while(head != null){
+            if (head.value != stack.pop().value){
+                return false;
+            }
+            head = head.next;
+        }
+        return true;
+    }
+
+    public static void  printLinkedList(Node head){
+        System.out.print("LinkedList:");
+        while(head != null){
+            System.out.print(head.value + "->");
+            head = head.next;
+        }
+        System.out.print("Null");
+        System.out.println();
+    }
+    public static void main(String[] args) {
+
+        Node head = null;
+        head = new Node(1);
+        head.next = new Node(2);
+        head.next.next = new Node(3);
+        head.next.next.next = new Node(2);
+        head.next.next.next.next = new Node(1);
+        printLinkedList(head);
+        System.out.println(isPalindroneOne(head));
+    }
+}
+~~~
 
 ### 如何轻松写出正确的链表代码
 
@@ -354,6 +402,176 @@ p.next.next = null ; // 这一步可有可无
   * 删除链表中导数第n个节点
   * 求链表的中间节点。
 
+带有头结点的链表
+
+~~~java
+package com.isea.dw.linkedlist;
+
+/**
+ * 手动实现一个LinkedList，要求满足如下的功能：
+ * <p>
+ * 向链表的任意一个位置添加元素
+ * 向链表的头部添加元素，向链表的尾部添加元素
+ * 删除链表的头部，尾部，任意位置的元素
+ * 随机获取元素的值，传入index，获取链表的最后一个元素，或者是第一个元素
+ * <p>
+ * 查找链表中是否包含元素t
+ * 判断链表是否为空
+ * 判断链表的长度是多大
+ * <p>
+ * 技巧：使用虚拟头结点，这样能够在配合size，对链表删除和添加都不需要考虑特殊的情况。
+ */
+public class LinkedList2<T> {
+    private class Node {
+        private T val;
+        private Node next;
+
+        public Node() {
+        }
+
+        public Node(T val) {
+            this();
+            this.val = val;
+        }
+
+        public Node(T val, Node next) {
+            this(val);
+            this.next = next;
+        }
+
+        @Override
+        public String toString() {
+            return this.val.toString();
+        }
+    }
+
+    // 为链表创建虚拟头结点
+    private Node dummyHead;
+    private int size; // 表征链表的长度信息
+
+    public LinkedList2() { // 初始化链表，size 为零，虚拟头结点是的val值是为null的
+        dummyHead = new Node(null, null);
+        size = 0;
+    }
+
+    // 返回链表的长度
+    public int getSize() {
+        return size;
+    }
+
+    // 判断链表是否是null
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    // 获取index位置的元素
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IllegalArgumentException("Illegal index...");
+        }
+        Node cur = dummyHead.next;
+        for (int i = 0; i < index; i++) {
+            cur = cur.next;
+        }
+        return cur.val;
+    }
+
+    // 获取表头
+    public T getFirst() {
+        return get(0);
+    }
+
+    // 获取链表的尾部元素
+    public T getLast() {
+        return get(size - 1);
+    }
+
+    // 在链表的index位置添加元素
+    public void add(int index, T t) {
+        if (index < 0 || index > size) {
+            throw new IllegalArgumentException("Illegal index...");
+        }
+        Node pre = dummyHead;
+        for (int i = 0; i < index; i++) {
+            pre = pre.next;
+        }
+        pre.next = new Node(t, pre.next);
+        size++;
+    }
+
+    // 在表头添加元素
+    public void addFirst(T t) {
+        add(0, t);
+    }
+
+    // 在表尾添加元素
+    public void addLast(T t) {
+        add(0, t);
+    }
+
+    // 删除链表index位置的元素
+    public T remove(int index) {
+        if (index < 0 || index >= size) {
+            throw new IllegalArgumentException("Illegal index...");
+        }
+
+        Node pre = dummyHead;
+        for (int i = 0; i < index; i++) {
+            pre = pre.next;
+        }
+        Node res = pre.next;
+        pre.next = res.next;
+        res.next = null;
+        size--;
+
+        return res.val;
+    }
+
+    // 删除链表头部元素
+    public T removeFirst() {
+        return remove(0);
+    }
+
+    // 删除链表的尾部的元素
+    public T removeLast() {
+        return remove(size - 1);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder res = new StringBuilder();
+        Node cur = dummyHead;
+        while (cur != null) {
+            res.append(cur.val + "->");
+            cur = cur.next;
+        }
+        res.append("NUll");
+
+        return res.toString();
+    }
+
+    public static void main(String[] args) {
+        LinkedList2<Integer> linkedList = new LinkedList2<>();
+        for (int i = 0 ; i < 5 ; i ++){
+            linkedList.addFirst(i);
+            System.out.println(linkedList);
+        }
+
+        linkedList.add(2,666);
+        System.out.println(linkedList);
+
+        linkedList.remove(2);
+        System.out.println(linkedList);
+
+        linkedList.removeFirst();
+        System.out.println(linkedList);
+
+        linkedList.removeLast();
+        System.out.println(linkedList);
+    }
+}
+~~~
+
 ## 栈
 
 一种先进后出的数据结构
@@ -364,41 +582,62 @@ p.next.next = null ; // 这一步可有可无
 
 ### 顺序栈
 
-使用固定数组实现的栈
+使用固定数组实现的栈：
 
 ~~~java
-// 基于数组实现的顺序栈
+package com.isea.springboot;
+
+/**
+ * @author isea_you
+ * @date 2019/8/21
+ * @time 20:38
+ * @target:
+ */
 public class ArrayStack {
-  private String[] items;  // 数组
-  private int count;       // 栈中元素个数
-  private int n;           // 栈的大小
+    private int[] stack;
+    private int size;
 
-  // 初始化数组，申请一个大小为 n 的数组空间
-  public ArrayStack(int n) {
-    this.items = new String[n];
-    this.n = n;
-    this.count = 0;
-  }
+    public ArrayStack(int initialSize) {
+        stack = new int[initialSize];
+        size = 0;
+    }
 
-  // 入栈操作
-  public boolean push(String item) {
-    // 数组空间不够了，直接返回 false，入栈失败。
-    if (count == n) return false;
-    // 将 item 放到下标为 count 的位置，并且 count 加一
-    items[count] = item;
-    ++count;
-    return true;
-  }
-  
-  // 出栈操作
-  public String pop() {
-    // 栈为空，则直接返回 null
-    if (count == 0) return null;
-    // 返回下标为 count-1 的数组元素，并且栈中元素个数 count 减一
-    String tmp = items[count-1];
-    --count;
-    return tmp;
-  }
+    // 入栈的元素
+    public void push(int val) {
+        if (size == stack.length) {
+            throw new IllegalArgumentException("栈满..");
+        }
+        stack[size++] = val;
+    }
+
+    // 出栈
+    public int pop() {
+        if (size == 0) {
+            throw new IllegalArgumentException("栈空...");
+        }
+        int res = stack[--size];
+        return res;
+    }
+
+    // 看栈顶
+    public int peek() {
+        if (size == 0) {
+            throw new IllegalArgumentException("栈空..");
+        }
+        return stack[size - 1];
+    }
+
+    public static void main(String[] args) {
+        ArrayStack stack = new ArrayStack(10);
+        for (int i = 0; i < 10; i++) {
+            stack.push(i);
+        }
+        System.out.println(stack.pop());
+        while (stack.size != 0) {
+            System.out.print(stack.pop() + ",");
+        }
+        System.out.println();
+    }
 }
 ~~~
 
@@ -406,13 +645,11 @@ public class ArrayStack {
 
 ![](img/algo/11.jpg)
 
-动态的顺序栈的时间复杂度仍然是O(1)：
+动态的顺序栈的时间复杂度仍然是O(1)，这里均摊时间复杂度是非常好实现的：
 
 ![](img/algo/12.jpg)
 
 **均摊时间复杂度一般都等于最好情况时间复杂度**
-
-
 
 ### 链式栈
 
@@ -457,11 +694,57 @@ int add(int x, int y) {
 
 ![](img/algo/14.jpg)
 
+表达式计算：
+
+~~~java
+
+~~~
+
 #### 在括号匹配中，
 
 也可使用栈来解决。
 
 其实很简单：从表达式的左边开始扫描，如果遇到{，（，[压入栈，如果遇到右边的，从栈顶取出一个元素，是否匹配，如果不匹配或者是栈中没有元素了，就是不匹配的表达式。
+
+~~~java
+public class MatchBrackets {
+    public static void main(String[] args) {
+
+        System.out.println(matchBrackets("{[()]}")); // true
+        System.out.println(matchBrackets("][{")); // false
+        System.out.println(matchBrackets("(]")); // false
+    }
+
+    public static boolean matchBrackets(String brackets) {
+        Stack<Character> stack = new Stack<>();
+
+        for (int i = 0; i < brackets.length(); i++) {
+            char bracket = brackets.charAt(i);
+            if (bracket == '{' || bracket == '[' || bracket == '(') {
+                stack.push(bracket);
+            }
+            if (bracket == '}' || bracket == ']' || bracket == ')') {
+                if (stack.isEmpty()) {
+                    return false;
+                }
+                char topStack = stack.pop();
+                if (bracket == ')' && topStack != '('){
+                    return false;
+                }
+                if (bracket == ']' && topStack != '['){
+                    return false;
+                }
+                if (bracket == '}' && topStack != '{'){
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+}
+~~~
+
+
 
 #### 例子
 
@@ -536,12 +819,7 @@ public class ArrayQueue {
     return ret;
   }
 }
-
 ~~~
-
-
-
-
 
 ### 链式队列
 
@@ -589,8 +867,6 @@ public class CircularQueue {
   }
 }
 ~~~
-
-
 
 ### 拥塞队列
 
@@ -887,7 +1163,7 @@ object Order_Algo {
 
 ### Gudience
 
-![](G:/%E7%94%B5%E5%AD%90%E4%B9%A6/MarkdownNotes/infrastructure/img/algo/21.jpg)
+![](img/algo/21.jpg)
 
 以上的三种排序对于小数据集的排序都是非常好用的，但是对于大数据来说，就需要使用`N*logN`的排序来实现了。
 
