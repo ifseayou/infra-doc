@@ -744,8 +744,6 @@ public class MatchBrackets {
 }
 ~~~
 
-
-
 #### 例子
 
 浏览器回看和前进的实现：
@@ -774,9 +772,9 @@ CPU的资源有限的，任务的处理速度和线程的个数并不是呈线�
 
 我们一般有两种处理策略，第一种是非阻塞的方式，直接拒绝任务的请求。另外一种是阻塞的处理方式，将请求排队，等到有线程空闲的时候，取出排队中的请求继续处理，那么如何处理排队中的请求？这就是队列需要解决的内容。
 
-如果我们需要公平的处理每个排队的请求，也即先进者先服务，这就是队列的使用场景，其实队列有两种实现方式，基于数组实现和基于链表实现。基础链表实现的队列能够实现**无边际队列**这有可能会导致过多的请求排队等候，请求处理相应的时间过长，所以针对笔记敏感的系统基于链表的实现的无限排队的线程池是不合适的。
+如果我们需要公平的处理每个排队的请求，也即先进者先服务，这就是队列的使用场景，其实队列有两种实现方式，基于数组实现和基于链表实现。基础链表实现的队列能够实现**无边际队列**这有可能会导致过多的请求排队等候，请求处理相应的时间过长，所以针时间敏感的系统基于链表的实现的无限排队的线程池是不合适的。
 
- 基于数组实现的有边界队列，由于队列的大小 有限，所以线程池中排队请求超过队列的大小的时候，接下来的请求就会被拒绝，这种方式对时间敏感的系统来说，比较合适，设置一个合理的数值也非常的考究！**连接池**也一样。
+基于数组实现的有边界队列，由于队列的大小 有限，所以线程池中排队请求超过队列的大小的时候，接下来的请求就会被拒绝，这种方式对时间敏感的系统来说，比较合适，设置一个合理的数值也非常的考究！**连接池**也一样。
 
 ![](img/algo/15.jpg)
 
@@ -831,40 +829,57 @@ public class ArrayQueue {
 
 ![](img/algo/5.png)
 
-**head 下一次要出队列的原素，tail下一次要入队的元素。循环队列的需要浪费数组的一个存储空间。**
+**head 下一次要出队列的原素，tail下一次要入队的元素。循环队列的需要浪费数组的一个存储空间。**当然也可以不浪费，只是需要添加一个size表来标记队列的长度即可。
 
 ~~~java
-public class CircularQueue {
-  // 数组：items，数组大小：n
-  private String[] items;
-  private int n = 0;
-  // head 表示队头下标，tail 表示队尾下标
-  private int head = 0;
-  private int tail = 0;
+/**
+ * 使用数组实现固定大小的队列，该队列是循环队列
+ */
+public class ArrayCircleQueue {
 
-  // 申请一个大小为 capacity 的数组
-  public CircularQueue(int capacity) {
-    items = new String[capacity];
-    n = capacity;
-  }
+    private int[] queue;
+    private int head; // 队首
+    private int tail; // 队尾
+    private int size; // 队里中有多少个元素
 
-  // 入队
-  public boolean enqueue(String item) {
-    // 队列满了
-    if ((tail + 1) % n == head) return false;
-    items[tail] = item;
-    tail = (tail + 1) % n;
-    return true;
-  }
+    public ArrayCircleQueue(int initialSize){
+        if (initialSize <  0 ){
+            throw new IllegalArgumentException("Illegal param...");
+        }
+        queue = new int[initialSize];
+        head = 0;
+        tail = 0;
+        size = 0;
+    }
 
-  // 出队
-  public String dequeue() {
-    // 如果 head == tail 表示队列为空
-    if (head == tail) return null;
-    String ret = items[head];
-    head = (head + 1) % n;
-    return ret;
-  }
+    // 入队
+    public void inqueue(int target){
+        if (tail == queue.length){
+            throw new IllegalArgumentException("queue full...");
+        }
+        queue[tail] = target;
+        tail = (tail + 1) % queue.length;
+        size ++;
+    }
+
+    // 出队
+    public int dequeue(){
+        if (size == 0){
+            throw new IllegalArgumentException("queue empty..");
+        }
+        int res = queue[head];
+        head = (head + 1) % queue.length;
+        size --;
+        return res;
+    }
+
+    // 查看队首的元素
+    public int peek(){
+        if (size == 0){
+            throw new IllegalArgumentException("queue empty..");
+        }
+        return queue[head];
+    }
 }
 ~~~
 
@@ -1116,44 +1131,41 @@ public class InsertSort {
 代码实现：
 
 ~~~java
-package com.isea.spark
-
-object Order_Algo {
-
-  def selectSort(array: Array[Int]): Unit = {
-    for (i <- 0 until array.length - 1) {
-      var minIndex = i
-      for (j <- i until array.length)
-        if (array(j) < array(minIndex)) {
-          minIndex = j
+public class SelectSort {
+    public static void selectSort(int[] arr){
+        if (arr.length == 1 || arr == null){
+            return;
         }
-      swap(array, i, minIndex)
+        for (int i = 0; i < arr.length - 1; i ++){
+            int minIndex = i; // 找到最小的元素放在数组的左边
+            for (int j = i ; j < arr.length; j ++){
+                if (arr[j] < arr[minIndex]){
+                    swap(arr,j,minIndex);
+                }
+            }
+        }
     }
-  }
 
-  def swap(arr: Array[Int], i: Int, j: Int): Unit = {
-    val tem = arr(i)
-    arr(i) = arr(j)
-    arr(j) = tem
-  }
-
-  def printArray(array: Array[Int]) = {
-    for (elem <- array) {
-      print(elem + " ")
+    private static void swap(int[] arr, int j, int i) {
+        int tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
     }
-    println()
-  }
+    private static void printArr(int[] arr) {
+        for (int i : arr) {
+            System.out.print(i + "\t");
+        }
+        System.out.println();
+    }
 
-  def main(args: Array[String]): Unit = {
-    val arr = Array(4, 5, 6, 3, 2, 1)
-    printArray(arr)
-    selectSort(arr)
-    printArray(arr)
-  }
+    public static void main(String[] args) {
+        int[] arr = {1, 88, 9, 5, 100, 2, 5, 34};
+        printArr(arr);
+        selectSort(arr);
+        printArr(arr);
+    }
 }
 ~~~
-
-
 
 ### 希尔排序
 
@@ -1166,6 +1178,8 @@ object Order_Algo {
 ![](img/algo/21.jpg)
 
 以上的三种排序对于小数据集的排序都是非常好用的，但是对于大数据来说，就需要使用`N*logN`的排序来实现了。
+
+# that is what I watch！！！
 
 ### 归并排序
 
@@ -1255,8 +1269,6 @@ public class MergeSort {
 
 **堆的弹出操作**：将堆的最后一个元素和堆顶的元素替换，替换之后进行`heapify`操作（`heapSize`要减1）。
 
-
-
 ### 快速排序
 
 Pivot：中心点。快排我实现了两个版本，经典快排+随机快排。本文中仅仅给出随机快排的版本，随机快排的思路是，随机数组中的任意一个元素和数组的最后一个元素交换位置记为pivot，然后在partition（小于pivot在数组的左边，等于的在中间，大于的在后面）然后在
@@ -1325,7 +1337,7 @@ public class QuickSort {
 }
 ~~~
 
-快排做不到稳定性。
+***快排做不到稳定性。*** 
 
 我们来对比一下快速排序和归并排序：
 
@@ -1333,7 +1345,9 @@ public class QuickSort {
 
 ​                  ![1565676816154](img/algo/15.png)                                
 
-利用快排求出`topK `并做到时间复杂度是O（N），据说可以做到，但是我并没有使用代码实现。
+利用快排求出`topK `并做到时间复杂度是O（N），据说可以做到，但是我并没有使用代码实现。思想：
+
+比如，4， 2， 5， 12， 3 这样一组数据，第 3 大元素就是 4。我们选择数组区间 A[0…n-1] 的最后一个元素 A[n-1] 作为 pivot，对数组 A[0…n-1] 原地分区，这样数组就分成了三部分，A[0…p-1]、A[p]、A[p+1…n-1]。
 
 ## 非基于比较的排序
 
@@ -1343,11 +1357,9 @@ public class QuickSort {
 
 桶排序的核心思想就是将要排序的数据分到几个有序的桶中，每个桶中的数据在单独进行排序，桶排序之后，在把每个桶里的数据按照顺序依次取出，组成的序列就是有序的。
 
-![1565676900247](img/algo/16.png)
+![](img/algo/16.png)
 
 我们的桶是有编号的，然后分别对桶中的数据排序，如果桶的数量足够多，极端的例子，假设50个数最小的1，最大的50，50个桶，遍历数组，将其放置到对应的桶的编号中，然后直接按照桶的编号取出，就得到了排好序的顺序。
-
- 
 
 **桶排序是一种排序的思想**，基数排序和计数排序是其的实现。
 
@@ -1356,8 +1368,6 @@ public class QuickSort {
 上面的那个极端的例子说的就是计数排序。高考的查分系统，总分是750分，最低分是0分，我们使用751个桶，将某省的考生的全部分数放入到对应的桶中，相同的桶中的分数放置到一个数组中。
 
 计数排序，只能用在数据范围不大的场景中，而且只能给**非负整数排序**。
-
-
 
 ### 基数排序
 
@@ -1429,7 +1439,11 @@ public class QuickSort {
 
 `Redis`中的`SortSet`的实现就是使用跳表+散列表来实现的。在`Redis`中的有序集合支持的操作主要包括：
 
-![1565677460179](img/algo/23.png)
+* 插入一个数据
+* 删除一个数据
+* 查找一个数据
+* 按照区间查找数据（比如查找值在[100,234]之间的数据）
+* 迭代输出有序序列
 
 在工程中，跳表没有现成的实现，但是红黑树有现成的实现，比如Java中的Map就是使用红黑树实现的。
 
