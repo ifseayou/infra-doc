@@ -1411,11 +1411,15 @@ public class QuickSort {
 
 ## 二分查找
 
+### 思想
+
 也叫做折半查找，假设有10个订单，并且按照从小到达的顺序排列好，查看某金额是否在：
 
 ![](img/algo/24.jpg)
 
-2的三十二次方大约是42亿，O（1）的时间复杂度>>O（`logN`）
+**2的三十二次方大约是42亿，O（1）的时间复杂度>>O（`logN`）**
+
+### 简单折半实现
 
 ~~~java
 package com.isea.dw.search;
@@ -1434,14 +1438,15 @@ public class BinarySearch {
         }
         int high = arr.length - 1;
         int low = 0;
-        while(low <= high){
-            int middle = low + (high - low) / 2;
+        while(low <= high){ // 容易出错
+            int middle = low + (high - low) / 2;  // 防止溢出，提高性能的写法如下
+            // int middle = low + ((high - low) >> 1); // 注意这里要加括号
             if (arr[middle] == value){
                 return middle;
             }else if (arr[middle] < value){
-                low = middle + 1;
+                low = middle + 1;  // low的更新
             }else {
-                high = middle - 1;
+                high = middle - 1; // high的更新
             }
         }
         return -1;
@@ -1453,23 +1458,247 @@ public class BinarySearch {
 }
 ~~~
 
+上述的代码注意我标注的最容易出错的地方，上面是非递归的实现，下面是**递归**的实现
 
+~~~java
+public class BinarySearch {
+    public static int binarySearch(int[] arr,int value){
+        if (arr.length <= 0  || arr == null){
+            throw new IllegalArgumentException("illegal param...");
+        }
+        return binarySearch(arr,0,arr.length - 1,value);
+    }
 
-①    针对有序的序列
+    private static int binarySearch(int[] arr,int low, int high, int value) {
+        if (low <= high){
+            int middle = low + (high - low) / 2;
+            if (arr[middle] == value){
+                return middle;
+            }else if (value > arr[middle]){
+                return binarySearch(arr,middle + 1,high,value); // 这里不要忘记了return
+            }else {
+                return binarySearch(arr,low,middle - 1, value); // 这里不要忘记了return
+            }
+        }
+        return -1;
+    }
 
-②    不适合小数据集，也不适合大数据集
+    public static void main(String[] args) {
+        int[] arr = {1,2,3,4,5,6,9};
+        System.out.println(binarySearch(arr, 3));
+    }
+}
+~~~
 
-一个问题，1000万个数据，每个数据8个字节，内存限制100M，如何在这1000万个整数中快速查找某个数？
+### 二分查找的局限性：
+
+* 依赖顺序的结构，也就是数组，因为数组支持随机访问，时间复杂度是O（1）
+* 数组必须是有序的，如果是静态的数据，我们可以先进行排序，然后在进行多次的二分查找，这样排序的成本就会被均摊，二分查找的边际成本（在经济学和金融学中，边际成本亦作增量成本，指的是每增产一单位的产品所造成的总成本的增量）就会很低，对于非静态的数据，也即为插入和删除的操作比较频繁的数据，维护的成本是很高的
+* 数据量太小不适合二分查找，但是有一个例外，就是如果数据之间的比较比较耗时的时候，不管数据量，推荐二分，例如数组中存储的数据是长度超过300的字符串，如此长的字符串的比较是比较耗时的，所以为了尽可能的减少比较次数，推荐使用二分查找。
+* 数据量太大不适合做二分查找，为什么呢？以为二分查找依赖的数组，而数组是连续的存储空间，假设数据量有1G，那么就要求1G的连续的内存。
+
+### 问题
+
+1000万个数据，每个数据8个字节，内存限制100M，如何在这1000万个整数中快速查找某个数？
+
+### Answer
+
+8000万字节，80 000 000 字节 = 80 000 K = 80 M ，直接使用数组进行一个存储然后进行一个排序，然后在使用二分查找来进行查找。
 
 大部分情况下，**用二分查找能够解决的问题，散列表，二叉树都可以解决**，但是这样会消耗较多额外的内存空间，如果散列表或者二叉树来存储1000万数据，100MB的内存存不下，而二分查找底层依赖的是数组，而数据除了数据本身之外，不在需要其他的存储空间，非常节省内存，所以能够实现这个需求。
 
-尽管第一个二分查找算法于 1946 年出现，然而第一个完全正确的二分查找算法实现直到1962年才实现。
+
+
+### 二分查找的变种
+
+尽管第一个二分查找算法于 1946 年出现，然而第一个完全正确的二分查找算法实现直到1962年才实现。其实二分查找是很难实现的，这句话是针对二分查找的变种来说的：
+
+![](img/algo/25.jpg)
+
+#### 查找第一个值等于给定值的元素
+
+看下面的例子，如果按照上面的代码逻辑来解决上诉的问题，会出现什么问题呢？
+
+![](img/algo/26.jpg)
+
+经过分析，不难发现返回的是a[7] == 8 ,返回的index = 7 ，并不是我们想要的index = 5，
+
+~~~java
+package com.isea.kafka.producer;
+
+/**
+ * @author isea_you
+ * @date 2019/8/25
+ * @time 14:58
+ * @target:
+ */
+public class BinarySearchFirst {
+    public static int binarySearchFirst(int[] arr,int value){
+        if (arr == null || arr.length <= 0){
+            return -1;
+        }
+        int low = 0;
+        int high = arr.length - 1;
+        while(low <= high){
+            int middle = low + (high - low) / 2;
+            if (value > arr[middle]){
+                low = middle + 1;
+            }else if (value < arr[middle]){
+                high = middle - 1;
+            }else {
+                if (middle == 0 || arr[middle - 1] != value){
+                    return middle;
+                }else {
+                    high = middle - 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1,3,4,5,6,8,8,8,11,18};
+        System.out.println(binarySearchFirst(arr, 8)); // 5
+    }
+}
+~~~
+
+#### 查找最后一个值等于给定值的元素
+
+按照上面的代码逻辑，我们可以很快速的写出这个变种的代码：
+
+~~~java
+package com.isea.kafka.producer;
+
+/**
+ * @author isea_you
+ * @date 2019/8/25
+ * @time 14:58
+ * @target:
+ */
+public class BinarySearchLast {
+    public static int binarySearchLast(int[] arr,int value){
+        if (arr == null || arr.length <= 0){
+            return -1;
+        }
+        int low = 0;
+        int high = arr.length - 1;
+        while(low <= high){
+            int middle = low + (high - low) / 2;
+            if (value > arr[middle]){
+                low = middle + 1;
+            }else if (value < arr[middle]){
+                high = middle - 1;
+            }else {
+                if (middle == arr.length - 1 || arr[middle + 1] != value){
+                    return middle;
+                }else {
+                    low = middle + 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {1,3,4,5,6,8,8,8,8,11,18};
+        System.out.println(binarySearchLast(arr, 8)); // 8
+    }
+}
+
+~~~
+
+#### 查找第一个大于等于给定值的元素
+
+例如，在 3 ， 4， 6 ，7 ，10 中找到第一个大于等于5 的元素，也就是6，返回index = 2
+
+~~~java
+package com.isea.kafka.producer;
+
+/**
+ * @author isea_you
+ * @date 2019/8/25
+ * @time 14:58
+ * @target: 返回第一个大于等于给定元素的下标
+ */
+public class BinarySearchFirstBigger {
+    public static int binarySearchLast(int[] arr,int value){
+        if (arr == null || arr.length <= 0){
+            return -1;
+        }
+        int low = 0;
+        int high = arr.length - 1;
+        while(low <= high){
+            int middle = low + (high - low) / 2;
+            if (arr[middle] >= value){
+                if (middle == 0 || arr[middle - 1] < value){ // 此时只有 < value的时候才可以直接返回value
+                    return middle;
+                }else {
+                    high = middle - 1;
+                }
+            }else {
+                low = middle + 1;
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {3,4,6,7,10};
+        System.out.println(binarySearchLast(arr, 5)); // 2
+    }
+}
+~~~
+
+#### 查找最后一个小于等于给定值的元素
+
+例如： 3， 5， 6， 8， 9， 10 ，最后一个小于 7 的是6 ，所以index = 2 
+
+```java
+package com.isea.kafka.producer;
+
+/**
+ * @author isea_you
+ * @date 2019/8/25
+ * @time 14:58
+ * @target: 返回最后一个小于等于给定元素的下标
+ */
+public class BinarySearchLastLesser {
+    public static int binarySearchLastLesser(int[] arr,int value){
+        if (arr == null || arr.length <= 0){
+            return -1;
+        }
+        int low = 0;
+        int high = arr.length - 1;
+        while(low <= high){
+            int middle = low + (high - low) / 2;
+            if (arr[middle] <= value){
+                if (middle == arr.length - 1 || arr[middle + 1] > value){
+                    return middle;
+                }else {
+                    low = middle + 1;
+                }
+            }else {
+                high = middle - 1;
+            }
+        }
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        int[] arr = {3,5,6,8,9,10};
+        System.out.println(binarySearchLastLesser(arr, 7)); // 2
+    }
+}
+```
+
+实际上，简单的二分查找实际应用的并不多，变体的才是应用相对更多的，例如百度中的IP地址定位问题，假如我们有**12万条IP地址区间和归属地的对应关系，如何快速定位出一个IP地址的归属地呢？** ，这里我们就可以使用 ： 12万条记录做排序，然后查找最后一个小于等于给定IP的IP区间，然后检查这个IP是否在这个区间内。如果有就显示归属地地址，如果没有就返回false，没有找到。
+
+**思考：** 如果有序数据是一个有序循环数组，比如4， 5， 6， 1， 2， 3  如何实现给定值的index？**LeetCode33**
 
 ## 跳表
 
-**跳表：链表上添加多级索引的结构，就是跳表。**
-
- 
+**跳表：链表上添加多级索引的结构，就是跳表。** 上面我们讲过了链表，其实只要对链表稍加改造，就可以支持类似“二分查找”的特性，我们把改造之后的数据结构称之为调表。
 
 跳表存储的元素是有序的。
 
@@ -1521,7 +1750,7 @@ public class BinarySearch {
 * 解决哈希冲突的比较好的办法是**链地址法**，进一步优化就是将链式结构，修改为树结构，比如java的Map中，使用红黑树来替代链表。
 * 装载因子：这个概念用来表示哈希表中的元素的多少，装载因子越大，说明散列表中的元素越多，空闲位置越少，发生哈希冲突的概率就越大。所以散列表需要动态扩容，也即当装载因子过大的时候，重新申请一个散列表，将数据搬移到新的散列表中，（假如每一次扩容都申请一个原来散列表大小两倍的空间，装载因子将变为原来的一半。）
 
-Java中的HashMap的举例：
+Java中的`HashMap`的举例：
 
 ~~~java
 // HashMap默认的初始大小是16
@@ -1550,13 +1779,9 @@ static final int TREEIFY_THRESHOLD = 8;
 
 因为在实际使用的过程中，即便是需要对哈希表进行扩容，也可以使用离线扩容的方式来进行扩容。所谓的离线扩容就是不需要用户等待，原来的哈希表仍然可以使用，在需要进行扩容的时候，用户的put操作，对新老的哈希表同时进行，用户的get操作只是针对老的哈希表，等到新的哈希表完全更新完毕之后，将用户的操作的哈希表切换到新的哈希表上。
 
- 
+而非离线扩容：是在用户操作的时候，当达到了扩容的阈值的时候，需要用户等待，等待哈希表扩容完毕之后，才能真正的对哈希表进行操作。 
 
-而非离线扩容：是在用户操作的时候，当达到了扩容的阈值的时候，需要用户等待，等待哈希表扩容完毕之后，才能真正的对哈希表进行操作。
-
- 
-
-相同输入导致相同输出，不同输入均匀分布。
+**相同输入导致相同输出，不同输入均匀分布。**
 
  
 
