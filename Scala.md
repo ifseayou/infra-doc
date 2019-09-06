@@ -68,7 +68,7 @@ scala> pow(2,2)
 res20: Double = 4.0
 ~~~
 
-通常在Scala中，每一个类都会有一个伴生对象，其方法和Java的静态方法一样。例如，BigInt类有一个生成随机素数的方法，调用的形式和java几乎是一样的：
+通常在Scala中，每一个类都会有一个伴生对象，其方法和Java的静态方法一样。例如，`BigInt`类有一个生成随机素数的方法，调用的形式和java几乎是一样的：
 
 ~~~scala 
 scala> BigInt.probablePrime(100,scala.util.Random)
@@ -224,13 +224,14 @@ object ScalaGrammer {
 懒值对于开销较大的初始化语句比较有用，懒值是位于***`val`和def***的中间状态：
 
 ~~~ scala
-    // 在word1定义的时候即被取值
-    val word1 = scala.io.Source.fromFile("").mkString
-    // 在words首次被使用的是时候，被取值
-    lazy val word2 = scala.io.Source.fromFile("").mkString
+// 在word1定义的时候即被取值
+val word1 = scala.io.Source.fromFile("").mkString
 
-  // 在每一次words首次使用的时候取值
-  def words = scala.io.Source.fromFile("**").mkString
+// 在words首次被使用的是时候，被取值
+lazy val word2 = scala.io.Source.fromFile("").mkString
+
+// 在每一次words首次使用的时候取值
+def words = scala.io.Source.fromFile("**").mkString
 ~~~
 
 ### Chapter3 数组
@@ -266,20 +267,19 @@ Scala中的Array是Java数组方式实现的，下面例子中的Array[String] �
 #### 算法
 
 ~~~java
-  val sum = Array(4, 2, 3)
-    println(sum.sum) // 9
-    println(ArrayBuffer("Mary", "had", "a", "little", "boy").max) // little
-    // sorted方法将原有的数组或者是缓冲数组排序
-    // 并返回新的数组或者是数组缓冲,原有的数组或者是缓冲数组不会被改变
-    val sorted: Array[Int] = sum.sorted
-    for (i <- sorted) print(i + "\t")  // 2	3	4
-
-    val arr = Array(1,7,2,9)
-    // 可以直接对一个数组排序，但是不能直接对缓冲数组排序
-    scala.util.Sorting.quickSort(arr)
-    // 此时arr的被改变了 ,参数的为是三个的时候，前缀，分隔符，后缀
-    println(arr) // [I@6574b225 直接打印一个Array没有意义
-    println(arr.mkString("<", ",", ">"))  // <1,2,7,9>
+val sum = Array(4, 2, 3)
+println(sum.sum) // 9
+println(ArrayBuffer("Mary", "had", "a", "little", "boy").max) // little
+// sorted方法将原有的数组或者是缓冲数组排序
+// 并返回新的数组或者是数组缓冲,原有的数组或者是缓冲数组不会被改变
+val sorted: Array[Int] = sum.sorted
+for (i <- sorted) print(i + "\t")  // 2	3	4
+val arr = Array(1,7,2,9)
+// 可以直接对一个数组排序，但是不能直接对缓冲数组排序
+scala.util.Sorting.quickSort(arr)
+// 此时arr的被改变了 ,参数的为是三个的时候，前缀，分隔符，后缀
+println(arr) // [I@6574b225 直接打印一个Array没有意义
+println(arr.mkString("<", ",", ">"))  // <1,2,7,9>
 ~~~
 
 ### Character4：映射和元组
@@ -330,7 +330,7 @@ for (v <- score1.values) print(v + "\t")
 for ((k,v) <- score1) yield (v,k)
 ~~~
 
-在操作映射的时候，你需要选定一个实现，一个哈希表或者是一个平衡树，默认情况下，scala给的是哈希表，`scala`中的不可变的树形映射是：
+在操作映射的时候，你需要选定一个实现，一个哈希表或者是一个平衡树，默认情况下，Scala给的是哈希表，`scala`中的不可变的树形映射是：
 
 ~~~scala
 val sortedMap = scala.collection.immutable.SortedMap("A" -> 1,"B"-> 2)
@@ -506,7 +506,7 @@ class Person(val name:String="",val age:Int=0)
 
 在Scala中，你可以在函数中定义函数，在类中定义类：
 
-### Chapter 对象
+### Chapter6 对象
 
 * 用对象作为单例或者存放工具方法
 * 类可以拥有一个同名的伴生对象
@@ -538,7 +538,7 @@ Account.newUniqueNumber() //即可
 
 #### 扩展类或者特质的对象
 
-一个object可以扩展类以及一个或者多个特质，其结果是扩展了指定类和特质类的对象，同时游泳堆中定义中给出的所有特性。
+一个object可以扩展类以及一个或者多个特质，其结果是扩展了指定类和特质类的对象，同时拥有堆中定义中给出的所有特性。
 
 #### apply方法
 
@@ -603,6 +603,296 @@ class ConsoleLogger extends Logger with AnotherTrait{
 ~~~
 
 和java一样，`scala`类只能有一个超类，但可以有任意数量的特质。在Scala中，特质中的方法不一定是抽象的。这一点和java是不一样的。
+
+### Character 8 
+
+关于Scala继承：
+
+* extend ，final，和java使用相同，扩展类使用extend关键字，final修饰字段，不能被重写，修饰类不能被继承
+* 只有主构造器可以使用超类的主构造器
+* 你可以重写字段
+
+#### 重写方法
+
+在Scala中重写一个非抽象方法，必须使用***override***修饰符。
+
+#### 类型检查和转化
+
+要测试某个对象是否属于某个给定的类，可以使用***`isInstance`*** ，如果测试通过，可以使用***`asInstance`***方法将引用转化为子类的引用。例如：
+
+~~~scala
+if(p.isInstance(Employee)) {
+    val s = p.asInstanceOf([Employee]) // s的类型为Employee
+} // 如果p指向的是Employee或者是其子类，可以和转化可以成功
+
+// 如果你想要测试p指向的是一个Empoyee对象但又不是其子类的话：
+if(p.getClass == classOf[Emplyee]) // classOf方法定义在scala.Predef对象中，会被自动引入
+~~~
+
+上述是使用类型检查和转化来实现，不过模式匹配通常是更好的选择：
+
+~~~scala
+p match{
+    case s:Emplyee=>... // 将s作为Employee处理
+    case => // p不是Employee
+}
+~~~
+
+#### 抽象字段
+
+处理抽象方法，类还可以有偶抽象字段，抽象字段就是一个没有初始值的字段例如：
+
+~~~scala
+abstract class Person{
+    val id :Int // 没有初始化，这是一个带有抽象的getter方法的抽象字段
+    var name:String // 另一个抽象字段，带有抽象的getter和setter方法
+} // 具体的子类必须提供具体的字段。
+~~~
+
+### Character10 特质
+
+* 类可以实现任意数量的特质
+* 特质可以要求实现他们的类具备特定的字段，方法或者是超类
+* 和Java接口不同，scala特质可以提供方法和字段的实现
+* 当你将多个特质叠加起来时，顺序很中药，其方法先执行的特质排在更后面
+
+### Chapter11 标识符
+
+* 标识符由字母，数字，或者是运算符构成
+* 一元和二元操作符其实是方法调用
+* 操作符优先级取决于第一个字符，而结合性取决于最后一个字符
+* apply和update方法对`expr(args)` 表达式求值的时候被调用
+* 提取器从输入中提取元组或者是值的序列
+
+#### 中置操作符
+
+***a 标识符 b*** 其中标识符代表一个带有两个参数的方法（一个隐式的参数和一个显示的参数）例如：
+
+~~~scala
+1 to 10 // 其实就是
+1.to(10)
+
+1 -> 10 // 其实就是
+1.->(10)
+~~~
+
+#### 一元操作符
+
+中置操作符是二元的，他们有两个参数，只有一个参数的操作符称为一元操作符，如果它出现在参数之后，那么她就是一个后置操作符： ***a  标识符***  上述表达式等同于方法调用  ***a.表示符()***，例如：
+
+~~~scala 
+1 toString // 其实就是：
+1.toString()
+
+// 赋值操作符
+a 操作符=b //即为：
+a = a 操作符 b
+~~~
+
+#### apply方法和update方法
+
+Scala允许你将如下的函数调用语法：
+
+~~~scala 
+f(arg1,arg2,...) // 如果f不是函数或者是方法，那么这个表达式就等同于调用：
+f.apply(arg1,arg2,..) // 除非她出现在赋值语句的等号左侧
+f(arg1,arg2,...) = value
+~~~
+
+该机制被用于数组和映射：
+
+~~~scala 
+val scores  = new scala.collection.mutable.HashMap[String,Int]
+score("bob") = 100 // 调用score.update("bob",100)
+val bobsScore = scores("bob") // 调用score.apply("bob")
+~~~
+
+apply方法也常用语伴生对象中，用来不使用new关键字构建对象。
+
+~~~scala
+class Fraction(n:Int,d:Int){  // 分数
+    ....
+}
+
+object Fraction{
+    def apply(n:Int,d:Int) = new Fraction(n,d)
+}
+
+// 利用apply方法构建一个分数
+val result = Fraction(3,5) * Fraction(4,5)
+
+// 利用unapply方法提取出分子和分母
+var Fraction(a,b) = Fraction(3,4) * Fraction(3,5)
+
+// a和b分别被初始化为分子和分母，或者是用于模式匹配
+case Fraction(a,b) => ...  // a和b被绑定到了分子和分母，可能会失效，因为unapply方法返回的是Option，
+
+~~~
+
+#### 提取器
+
+所谓的提取器就是一个带有`unapply`方法的对象，你可以把`unapply`是apply的反向操作，apply方法接收构造参数，然后把他们变成对象，而`unapply`方法接收一个对象，然后从中提取质，通常这些值就是当初构造该对象的值。
+
+### Chapter12 函数
+
+* 你可以创建匿名函数，通常还会把他们交给其他函数
+* 函数参数可以给出需要稍后执行的行为
+* 许多集合方法都接收函数参数，将函数应用到集合中的值
+* 有很多语法上的简写让你以简短而且易读的方式表达函数参数
+* 你可以创建操作代码块的函数，他们看上去就像是内建的控制语句
+
+#### 作为值的函数
+
+Scala中，你可以在变量中存放函数
+
+~~~scala 
+import scala.math._
+val num = 3.14
+val fun = ceil _ // ceil后面的 _ 意味着你确实指得是这个函数，而不是忘记了加上参数， _ 将ceil方法转成了函数，在scala中，你无法直接操纵方法，只能直接操作函数
+~~~
+
+~~~scala
+scala> val fun = ceil _
+fun: Double => Double = <function1>  // 表名这是一个函数，输入的参数是Double，输出的类型是Double
+~~~
+
+那么上述我们定义的函数能够做什么呢？
+
+* 调用这个函数
+* 传递她，放在一个变量中，或者是作为参数传递给另外一个函数
+
+~~~scala 
+Array(3.12,1.3,2.0).map(fun) // 
+scala> Array(3.12,1.3,2.0).map(fun)
+res0: Array[Double] = Array(4.0, 2.0, 2.0)
+~~~
+
+#### 匿名函数
+
+在Scala中你不需要给一个函数命名，
+
+~~~scala
+（x:Double) => 3 * x
+
+// 当然你可以把这函数存放到变量中
+val triple = (x:Double) => 3 * x
+
+// 这就和你用def一样
+def triple(x:Double)  = > 3 * x
+
+// 但是你不需要给函数命名，你可以直接将她传递给另外一个函数
+Array(3,14,3.12,3).map((x:Double) => 3 * x)
+~~~
+
+#### 带函数参数的函数
+
+比如map()
+
+#### 参数（类型）推断
+
+当你将一个匿名函数传递给另外 一个函数或者方法的时候，Scala会尽可能帮助你推断出类型信息，比如：
+
+~~~scala
+valueAtOneQuarter((x:Double) => 3 * x) 
+
+// 由于valueAtOneQuarter知道你会传入一个类型为（Double）=> Double的参数，你可以简单写为：
+valueAtOneQuarter((x) => 3 * x) // 而且，作为只有一个参数的函数，可以省去
+valueAtOneQuarter(x => 3 * x)
+~~~
+
+#### 闭包
+
+在Scala中，你可以在任何作用域内定义函数：包，类，甚至是另一个函数或者方法，在函数体内，你可以访问到相应的作用域的任何变量。这里请注意，你的函数可以 在变量不在处于作用域内时被调用。**`mulBy`**函数。
+
+~~~scala 
+def mulBy(factor:Double) = (x:Double) => factro * x
+
+// 考虑如下的调用
+val triple = mulBy(3)
+val half = mulBy(0.5)
+print(triple(14) + " " + half(14)  // 42  7
+~~~
+
+**上述的函数被叫做是闭包，闭包有代码和代码用到的任何非局部变量定义构成**。 这些的一个函数实际上是以类的对象的方式实现的，该类有一个实例变量factor和一个包含了函数体的apply方法。如此一来Scala编译器会确保你的函数会访问到非局部变量。
+
+#### 柯里化
+
+**指的是将原来接收两个参数的函数变成新的接收一个参数的函数的过程，新的函数返回一个以原有第二个参数作为参数的函数。**如下：
+
+~~~scala
+def mul(x:Int,y:Int) = x * y  // 接收两个参数
+
+// 一下函数接收一个参数，生成另一个接收单个参数的函数
+def mulOneAtATime(x:Int) = (y:Int) => x * y
+
+// 如果要计算两个数的乘积，需要调用：
+mulOneAtATime(6)(7)
+
+
+// Scala支持如下的简写来定义如下的柯里化函数
+def mulOneAtATime(x:Int)(y:Int) = x * y
+~~~
+
+可以看到，多参数不过是个虚饰，并不是编程语言的什么根本特性，有时候，你时候你想要用柯里化来把某个函数参数单拎出来，以提供更多的用于类型推断的信息。如下
+
+~~~scala
+val  a = Array("Hello","World")
+var b = Array("hello","world")
+a.corresponds(b)(_.equalsIgnoreCase(_))
+
+// 这里函数_.equalsIgnoreCase(_)是一个经过柯里化的参数的形式传递信息的，有自己独立的(...)，corresponds的类型声明如下：
+def corresponds[B](that:Seq[B])(p:(A,B)=> Boolean):Boolean
+~~~
+
+在这里that序列和前提函数p是分开的两个柯里化的参数，类型推断器可以分析出B出自that的类型，因此就可以用这个信息来分析作为参数p传入的函数。拿本例来说，that是一个String类型的序列，因此，前提函数应有的类型为`(String,String)=> Boolean` ，有了这个信息，编译器就可以接受`_equalsIgnoreCase(_)`作为`(a:String,b:String)=>a.equalsIgnoreCase(b)`的简写。
+
+### Character13 集合
+
+* 所有的集合都扩展自`Iterable`特质
+* 集合有三大类，分别为序列，集和映射
+* 几乎所有的集合类，Scala都同时提供了可变和不可变版本
+* Scala列表要么是空的，要么有一头一尾，其中尾部本身又是一个列表
+* 集是无先后次序的集合
+* 用`LinkedHashSet`来保留插入顺序，用`SortedSet`来按顺序进行迭代
+* +将元素添加到无先后次序的集合中；**+：和:+向前后向后追加到序列，++将连个集合串接在一起，-，-- 移除元素
+* `Iterable和Seq`特质有数十个用于常见操作的方法，在编写冗长繁琐的循环之前，你先看看这些方法是否满足你的需要
+* 映射，折叠和拉链都是很有用的 技巧，用啦将函数或者是操作音乐宫到集合中的元素
+
+每个Scala集合特质或者是类都有一个带有`apply`方法的伴生对象，这个apply方法可以用来构建该集合中的实例。
+
+#### 可变和不可变集合
+
+
+
+#### Range和Vector
+
+Vector向量，支持随机访问，以树的形式来构建
+
+Range表示一个整数序列，Range对象只是不存储所有的值，只是存储起始值，终止值，和增加值，可以使用to 和until来构建 Range对象
+
+#### 列表
+
+在Scala中，列表要么是Nil（即空表）要么是一个head元素加上一个tail，而tail还是一个列表，如：
+
+~~~scala
+
+~~~
+
+#### `Iterable` 特质的重要方法
+
+
+
+
+
+
+
+#### `Seq` 特质的重要方法
+
+以下的这些方法不该变原有的集合，他们返回一个和原集合类型相同的新集合，“统一返回类型”
+
+
+
+
 
 
 
