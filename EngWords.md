@@ -26,15 +26,15 @@ purge # 清除
 
 
 
-~~~:two_hearts:
+~~~shell
 curl -X POST -H 'Content-Type: application/json' -i 'http://192.168.1.30:8083/connectors' --data '{"name":"load-mysql-data","config":{"connector.class":"JdbcSourceConnector","connection.url":"jdbc:mysql://192.168.1.212:3306/connector?user=root","mode":"timestamp","validate.non.null":"false","timestamp.column.name":"login_time","table.whitelist":"login","mode":"timestamp","topic.prefix": "mysql."}}'
 
 
+curl -X POST -H 'Content-Type: application/json' -i 'http://localhost:8083/connectors' --data '{"name":"load-mysql-data","config":{"connector.class":"JdbcSourceConnector","connection.url":"jdbc:mysql://localhost:3306/connector?user=root&password=isea","mode":"timestamp","validate.non.null":"false","timestamp.column.name":"login_time","table.whitelist":"login","mode":"timestamp","topic.prefix": "mysql."}}'
 
 
+curl -X POST -H 'Content-Type: application/json' -i 'http://localhost:8083/connectors' --data '{"name":"sink-data-2mysql","config":{"connector.class":"JdbcSinkConnector","connection.url":"jdbc:mysql://localhost:3306/connector?user=root&password=isea","topics":"","name": "jdbc-sink"}}'
 
 
-
-{"error_code":400,"message":"Connector configuration is invalid and contains the following 2 error(s):\nInvalid value java.sql.SQLException: Unknown error 1045 for configuration Couldn't open connection to jdbc:mysql://192.168.1.212:3306/connector?user=root\nInvalid value java.sql.SQLException: Unknown error 1045 for configuration Couldn't open connection to jdbc:mysql://192.168.1.212:3306/connector?user=root\nYou can also find the above list of errors at the endpoint `/{connectorType}/config/validate`"}
 ~~~
 

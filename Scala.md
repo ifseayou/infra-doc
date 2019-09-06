@@ -862,7 +862,7 @@ def corresponds[B](that:Seq[B])(p:(A,B)=> Boolean):Boolean
 
 #### 可变和不可变集合
 
-
+不可变集合不可改变，即便是多个线程的应用程序，也可以安全的共享其引用，Scala优先使用不可变集合
 
 #### Range和Vector
 
@@ -875,14 +875,14 @@ Range表示一个整数序列，Range对象只是不存储所有的值，只是�
 在Scala中，列表要么是Nil（即空表）要么是一个head元素加上一个tail，而tail还是一个列表，如：
 
 ~~~scala
-
+val d = List(4,3) // d.head的值是4，head.tail是List(2)  d.tail.head是2，d.tail.tail是Nil
 ~~~
 
 #### `Iterable` 特质的重要方法
 
+![](img/scala/14.png)
 
-
-
+![](img/scala/15.png)
 
 
 
@@ -890,17 +890,51 @@ Range表示一个整数序列，Range对象只是不存储所有的值，只是�
 
 以下的这些方法不该变原有的集合，他们返回一个和原集合类型相同的新集合，“统一返回类型”
 
+![](img/scala/16.png)
+
+![](img/scala/17.png)
+
+如果你应用到各个元素仅仅是为了它的副作用，而不关心函数值的话，那么可以使用**`foreach`**，
+
+#### 化简，折叠，扫描
+
+~~~scala
+scala> List(1,7,2,9).reduceLeft(_ - _)  // 将方法应用于同一个集合中的相邻元素
+res1: Int = -17
+~~~
+
+![](img/scala/18.png)
+
+#### 拉链
+
+该操作以将相互对应的元素结合在一起：
+
+~~~scala 
+num: List[Int] = List(1, 2, 3)
+
+scala> val param = List("a","b","c")
+param: List[String] = List(a, b, c)
+
+scala> num zip param  // zip拉链操作
+res2: List[(Int, String)] = List((1,a), (2,b), (3,c))
+~~~
 
 
 
+### character14 模式匹配
 
+* 优先选择模式匹配，而不是**`isInstanceOf、asInstanceOf`**
 
+* 在for表达式中，不能匹配的情况会被安静的跳过
+* Option来存放可能存在或不存在的值，比null更安全
 
+~~~scala
 
+~~~
 
+### Character 21 隐式转化
 
-
-
+所谓的隐式转化函数指的是那种以**`implicit`**关键字声明的带有单个参数的函数，
 
 
 
