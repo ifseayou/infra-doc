@@ -940,8 +940,6 @@ res2: List[(Int, String)] = List((1,a), (2,b), (3,c))
 
 
 
-
-
 ## Scala开发环境的搭建
 
 和安装JDK的步骤几乎一致，这里不做介绍。在Windows环境和Linux环境下均可。
@@ -973,12 +971,6 @@ Scala中的运算符都是以方法的形式存在的。
 
 
 
-## 小tip
-
-
-
-
-
 ## 伴生对象
 
 * 使用 **Object** 来声明，伴生对象中声明的都是"静态内容" 可以用伴生对象名称直接调用。
@@ -1006,12 +998,121 @@ def parallelize[T: ClassTag](
   new ParallelCollectionRDD[T](this, seq, numSlices, Map[Int, Seq[String]]())
 }
 
-// 这就是Scala的函数，一个函数其中有两个参数，函数的返回类型是RDD[T] 函数体就是 withScopt{}
-defaultParallelism 是默认并行度，这是一个方法。
+// 这就是Scala的函数，一个函数其中有两个参数，函数的返回类型是RDD[T] 函数体就是 withScopt{}   	defaultParallelism 是默认并行度，这是一个方法。Parallelize 方法调用了 withScope方法,其中withScope{ } 也是已给方法，{ }中放置的是该函数的的参数，Scala中的
+= test（x,y,z）// 可以直接变为 
+= test{
+	X,
+	Y,
+	Z
+	}
+//如果test方法没有参数，直接 = test
 
+TraversableOnce  // 表示的是可迭代的
+def flatMap[U: ClassTag](f: T => TraversableOnce[U])
+// 表示的是转换为一个可迭代的类型。也就是说T可以是任意的类型，但是转换之后，必须是可迭代的类型。
+
+
+object TestT {
+  def main(args: Array[String]): Unit = {
+    def mul(x :Int)(y:Int) = x * y // 参数以多个括号的方式罗列在函数的后面
+    println(mul(13)(3))
+  }
+}
+
+// 在Scala中，ConsumerRecord[String,String]就表示了一个Map，[K,V]指代的是K，和V 的泛型。Map集合中的元素，实际上就是Truple2类型，也就是Map中的元素即为二元组。
+val map3 = mutable.Map(("Alice" , 10), ("Bob" , 20), ("Kotlin" , 30))
+
+
+// Scala中map.get(key) 如果key存在，则返回Some，如果key不存在则返回None，两者都是Option对象。算子（=>）表示该算子需要传入一个函数，能够接收一个函数作为参数的函数叫做高阶函数，比如
+
+Test(f:Double=>Double){
+   f(3.2)
+}//这里面，f就是形式参数的名字，Double表示传入的函数的形参是Double,并且该函数的返回类型也是Double，=> 仅仅就是一个规定。
+
+// 另外=>的用法：在模式匹配中，相当于java 中switch的 ：
+
+// 体会一下scala的能省则省：
+object TTT {
+  def main(args: Array[String]): Unit = {
+    val result1: Array[Int] = Array(1,2,3).map(plus2)
+    println(result1.mkString(","))  // 3,4,5
+
+    val result2: Array[Int] = Array(1,2,3).map(plus3(_))
+    println(result2.mkString("--"))  // 4--5--6
+  }
+  def plus3(x : Int) = {
+     x + 3
+  }
+
+  def plus2(x : Int) = x + 2
+  /**
+    * scala这个语言，是能省则省，如果函数只有一行，干脆就写一行
+    * map传入的参数确定是Int类型的，plus2传入的参数也是Int，推断出来了，直接省掉
+    */
+}
+
+// 体会一下匿名函数：
+object TTT {
+  def main(args: Array[String]): Unit = {
+    val mul3 = (x : Int) => x * 3
+    println(mul3(4)) // 12
+  }
+
+  /**
+    * 匿名函数：就是没有名字的函数， (x:Int)是函数的形参部分，x * 3 是函数体，
+    * 返回类型有类型推导完成
+    * mul3是代表该该匿名函数的变量，通过他可以实现函数的调用
+    */
+}
+
+
+// 体会高阶函数：能够接收一个函数作为参数的函数，即为高阶函数
+object TTT {
+  def main(args: Array[String]): Unit = {
+    val f1 = minusxy(10)
+    println("f1=" + f1) // function1
+    println(f1(1)) //  9
+    println(f1(2)) //  8
+    println(minusxy(20)(9))  // 20 - 9  = 11
+
+    //f1 就是  (y :int ) = { x - y}
+  }
+
+  //高阶函数，可以返回一个函数类型
+  //1. minusxy 返回的类型是函数 (y: Int) => x - y
+  //2. 返回的匿名函数，使用到本身函数的外部变量 x, 这时匿名函数和x 构成一个闭包: 一个函数和其相关的引用环境（变量）组合成一个整体。
+
+  /**
+    *   说明: def minusxy(x: Int) = (y: Int) => x - y
+    * 1) 函数名为 minusxy
+    * 2) 该函数返回一个匿名函数
+    * (y: Int) = > x -y
+    *
+    *   说明val result3 = minusxy(3)(5)
+    *
+    * 1) minusxy(3)执行minusxy(x: Int)得到 (y: Int) => x - y 这个匿名函
+    * 2) minusxy(3)(5)执行 (y: Int) => x - y 这个匿名函数
+    * 3) 也可以分步执行: val f1 = minusxy(3);   val res = f1(90)
+    */
+}
+// 类型推断时候的省略：当传入的函数，只有单个参数的时候，可以省略括号，如果变量只在=>右边只出现一次，可以使用_来替代。
+
+object TTT {
+  def main(args: Array[String]): Unit = {
+    val list = List(1,2,3)
+
+    list.map((x:Int) => x + 1) // 正常的写法，传如一个匿名函数
+
+    list.map((x) => x + 1) // 编译器可以推断出来类型，因此类型省略
+
+    list.map(x => x + 1) // 传入的函数，只有单个参数，因此类型括号
+
+    println(list.map(_ + 1))// 变量只在=>的右边出现一次，使用_替代，并将参数去掉
+
+    println(list.map{
+      _ + 1
+    }) // 使用{}可以放置多行代码
+  } 
+}
 ~~~
-
-
-
-### 调用函数时使用{}来传递参数
 

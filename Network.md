@@ -1,5 +1,23 @@
 # Computer&Network 
 
+## SSL & TLS
+
+互联网的通信安全，建立在SSL/TLS协议之上。Secure Sockets Layer，**Transport Layer Security** 
+
+不使用SSL/TLS的HTTP通信，就是不加密的通信。所有信息明文传播，带来了三大风险。
+
+> （1） **窃听风险**（eavesdropping）：第三方可以获知通信内容。
+>
+> （2） **篡改风险**（tampering）：第三方可以修改通信内容。
+>
+> （3） **冒充风险**（pretending）：第三方可以冒充他人身份参与通信。
+
+[学习地址](<https://www.ruanyifeng.com/blog/2014/02/ssl_tls.html>)
+
+
+
+
+
 ## 端口
 
 | FTP             | 21   |
@@ -9,9 +27,21 @@
 | QQ              | 1080 |
 | HTTPS           | 443  |
 
+## UDP
+
+UDP是面向无连接的，不保证不丢失，不保证数据按照顺序到达。UDP是无状态服务，相对于TCP没有拥塞控制。UDP的数据包格式如下：
+
+![](img/net/4.png)
+
+
+
 ## TCP
 
+TCP是面向连接的，TCP会三次握手，建立可靠的连接，从而保证可靠的数据交付，做到数据的无差错，不丢失，不重复，而且按序到达；TCP有拥塞控制，TCP面向字节流。
+
 ### TCP的报文格式
+
+
 
 ![](img/net/1.jpg)
 
