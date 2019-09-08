@@ -1,5 +1,27 @@
 # Computer&Network 
 
+## 问题记录：
+
+我的虚拟机主机名是：hadoop104，对应的IP地址是 192.168.1.104，平时使用`xshell`去连接的时候，完全没有什么问题，但是当我把电脑待会宿舍的时候，发现怎么也连接不上了，针对这个问题，我怀疑是IP地址冲突了，然后我查看了我本地的IP地址，发现本机的IP地址竟然也是192.168.1.104。然后我对本机执行了
+
+~~~shell
+ipconfig/release # 释放本机从DHCP地址池获取的IP
+~~~
+
+然后就可以使用`xshell`连接上虚拟主机了。查看windows主机的IP地址：
+
+![](img/net/5.png)
+
+其实此时本地的windows主机是无法上网的，因为当前的windows主机没有从DHCP地址池获取到有效的IP地址，需要执行下面的命令：
+
+~~~shell
+ipconfig/renew 
+~~~
+
+发现获取的IP地址还是192.168.1.104，是因为路由器设置了IP-MAC地址绑定的缘故。不过既然Xshell已经连接上了虚拟主机，也就不管那么多了。
+
+
+
 ## SSL & TLS
 
 互联网的通信安全，建立在SSL/TLS协议之上。Secure Sockets Layer，**Transport Layer Security** 
@@ -13,10 +35,6 @@
 > （3） **冒充风险**（pretending）：第三方可以冒充他人身份参与通信。
 
 [学习地址](<https://www.ruanyifeng.com/blog/2014/02/ssl_tls.html>)
-
-
-
-
 
 ## 端口
 
