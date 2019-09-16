@@ -803,7 +803,7 @@ class MyCallable03 implements Callable<Integer>{
 
 相同点：都继承了Throwable类， 不同点：Error是指在正常的情况下不太可能出现的情况，一旦发生，程序就处于非正常的，不可恢复的状态。Exception 分为可检查异常，和不可检查异常（也即运行时异常），可检查异常在代码中必须进行显示的捕获和声明。而不可检查异常，并不需要。
 
-![](G:/MarkdownNotes/tech-doc/img/java/6.png)
+![](/img/java/6.png)
 
 ***NoClassDefFoundError  和 ClassNotFoundException的区别***
 
@@ -819,7 +819,7 @@ class MyCallable03 implements Callable<Integer>{
 
 Java的异常处理机制，会消耗一定的性能：
 
-![](G:/MarkdownNotes/tech-doc/img/java/7.png)
+![](/img/java/7.png)
 
 
 
@@ -942,8 +942,6 @@ public class HelloRegex {
 
 
 
-
-
 ### Properties
 
 ~~~java
@@ -993,8 +991,6 @@ public class Bundles {
 ~~~
 
 ![](img/java/3.png)
-
-
 
 
 
@@ -1094,7 +1090,7 @@ public class Java8Tester {
 
 **二、认识Executor（执行器）**
 
-* 并发编程的一种编程方式是把任务拆分为一系列的小任务，即Runnable，然后将这些任务提交给一个Executor执行，**`Executor.execute(Runnalbe)`** 。Executor在执行时使用其内部的线程池来完成操作。Executor的子接口有：`ExecutorService,ScheduledExecutorService,`已知实现类：`AbstractExecutorService,ScheduledThreadPoolExecutor,ThreadPoolExecutor`。 
+* 并发编程的一种编程方式是把任务拆分为一系列的小任务，即Runnable，然后将这些任务提交给一个Executor执行，**`Executor.execute(Runnalbe)`** 。Executor在执行时使用其内部的线程池来完成操作。Executor的子接口有：**ExecutorService**,`ScheduledExecutorService,`已知实现类：`AbstractExecutorService,ScheduledThreadPoolExecutor,ThreadPoolExecutor`。 
 * Executor属于public类型的接口。可以用于提交，管理或者执行Runnable任务。实现Executor接口的class还可以控制Runnable任务执行线程的具体细节。包括线程使用的**细节、调度**等。一般来说，Runnable任务开辟在新线程中的使用方法为：`new Thread(new RunnableTask())).start()`
 * 在Executor中，可以使用Executor而不用显示地创建线程。例如，可以使用以下方法创建线程，而不是像第2点中为一种任务中的每个任务都调用new Thread(...)的方法。
 
@@ -1104,7 +1100,7 @@ executor.execute(new RunnableTask()); // 异步执行
 executor.execute(new RunnableTask()); 
 ~~~
 
-**三、Executors类： 主要用于提供线程池相关的操作**
+**三、Executors类： ·主要用于提供线程池相关的操作**
 
 Executors类，提供了一系列工厂方法用于创建线程池，返回的线程池都实现了`ExecutorService`接口。
 
@@ -1168,10 +1164,6 @@ where rk <= 3
 
 在一个阻塞C/S系统中,服务器要为每一个客户连接开启一个线程阻塞等待客户端发送的消息.若使用非阻塞技术,服务器可以使用一个线程对连接进行轮询,无须阻塞等待.这大大减少了内存资源的浪费,也避免了服务器在客户线程中不断切换带来的CPU消耗,服务器对CPU的有效使用率大大提高.
 
-
-
-
-
 #### NIO的组成部分：
 
 :one: Buffer，高效的数据容器，所有的基本数据类型都有对应的Buffer实现
@@ -1179,6 +1171,50 @@ where rk <= 3
 :two: Channel，是NIO中被用来支持批量式IO操作的一种抽象,File或者是Socket通常被认为是较高层次的抽象，而channel则是操作系统底层的一种抽象。
 
 :three:  Selector，**是NIO实现多路复用的基础**，可以检测到注册在selector上的多个channel中，是否有channel处于就绪状态，进而实现了单线程对于多channel的高效管理。 
+
+### IO和NIO的区别
+
+| IO               | NIO                 |
+| ---------------- | ------------------- |
+| 面向流（Stream） | 面向缓冲（Buffer）  |
+| 阻塞IO           | 非阻塞IO            |
+| 无               | 选择器（Selectors） |
+
+#### 面向流和面向缓冲
+
+Java IO 面向流意味着每次从流中读一个或多个字节，直至读取所有字节，只能顺序读取所有数据。如果想要跳过一些字节或者想要读取已经读取过的数据，则必须将从流中的数据线缓存起来。
+
+Java NIO的处理方式不一样。数据一开始就被读写到缓冲区（Buffer），根据需要你可以控制读取什么位置的数据。这就增加了处理过程中的灵活性。然而，你需要额外做的工作是检查你需要的数据是否已经全部到了Buffer中，你还需要保证当有更多的数据进入Buffer中时，Buffer中未处理的数据不会被覆盖
+
+~~~properties
+# kafka相关配置
+kafka2db.application.id=kafka2tsdb-test
+kafka2db.kafka.source.topics=seconddata-topic
+
+# 写入InfluxDB
+kafka2db.datasource.type=influxdb
+
+# InfluxDB相关配置=====================================
+influxdb.url=http://192.168.1.212:8086
+influxdb.dbname=pyd
+# influxdb-pool的配置 -------------------------
+#池中保留的最多连接总数量
+influxdb.pool.max.total=100
+#池中保留的最多空闲连接数量
+influxdb.pool.max.idle=30
+#池中保留的最少空闲连接数量
+influxdb.pool.min.idle=20  
+#获取连接的等待时间
+influxdb.pool.max.wait.millis=3000
+
+kafka2db.num.stream.threads=1 
+~~~
+
+
+
+
+
+
 
 ### AIO
 
@@ -1213,7 +1249,7 @@ Java虚拟机栈也是线程私有的，它的生命周期和线程相同，虚�
 该区域规定了两种异常：
 
 * StackOverflowError ：栈帧的深度大于虚拟机所规定的深度
-* 如果虚拟机栈可以动态扩容（当前大部分的Java虚拟机都可以动态扩容，在虚拟机规范中也允许固定长度的虚拟机栈）如果扩展时无法申请到足够的内存，就会报 OurOfMemoryError。
+* 如果虚拟机栈可以动态扩容（当前大部分的Java虚拟机都可以动态扩容，在虚拟机规范中也允许固定长度的虚拟机栈）如果扩展时无法申请到足够的内存，就会报 OutOfMemoryError。
 
 #### 本地方法栈
 
