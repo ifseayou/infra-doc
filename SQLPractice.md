@@ -2,7 +2,7 @@
 
 > 本文档仅仅记录SQL练习的相关笔记。
 
-SQL的执行顺序：
+## SQL的执行顺序：
 
 1. from子句组装来自不同数据源的数据；
 2. where子句基于指定的条件对记录行进行筛选；
@@ -12,6 +12,32 @@ SQL的执行顺序：
 6. 计算所有的表达式；
 7. select 的字段；
 8. 使用order by对结果集进行排序
+
+## SQL函数
+
+[函数](<https://www.runoob.com/mysql/mysql-functions.html>)
+
+下面是关于时间函数的练习题：
+
+~~~sql  
+
+~~~
+
+
+
+~~~sql 
+select dept_id,
+sum(case sex when '男' then 1 else 0) male
+sum(case sex when '女' then 1 else 0) female
+from emp_sex
+group by dept_id;
+~~~
+
+
+
+
+
+## 牛客网MySQL练习题
 
 ~~~SQL
 --1) 获取最晚入职的员工
@@ -213,21 +239,30 @@ where to_date = '9999-01-01'
 order by salary desc, emp_no;
 
 --24) 获取所有非manager员工当前的薪水情况，给出dept_no,emp_no，salary
+select d.dept_no,e.emp_no,salary
+from employees e left join dept_emp d
+on e.emp_no = d.emp_no
+left join salaries s 
+on e.emp_no = s.emp_no 
+left join dept_manager m 
+on d.emp_no = m.emp_no
+where m.emp_no is null 
+and m.to_date = '9999-01-01'
+and d.to_date = '9999-01-01'  -- 这样的写法有case没有通过
 
 
 
+select d.dept_no,e.emp_no,salary 
+from dept_emp as d left join employees as e 
+on d.emp_no = e.emp_no
+left join salaries as s
+on e.emp_no = s.emp_no
+where s.to_date = '9999-01-01' 
+and e.emp_no not in (select emp_no 
+from dept_manager
+where to_date = '9999-01-01');
 
-
-
-
-
-
-
-
-
-
-
-
+--25）获取员工其当前的薪水比其manager当前薪水还高的相关信息，结果第一列给出员工的emp_no，第二列给出其manager的manager_no，第三列给出该员工当前的薪水emp_salary,第四列给该员工对应的manager当前的薪水manager_salary
 
 
 
@@ -235,4 +270,102 @@ order by salary desc, emp_no;
 
 ~~~
 
- 
+###  
+
+##  HQL 练习，
+
+这里存储有关于**HQL**的练习题：
+
+### 数据仓库的SQL需求
+
+#### 需求1：用户活跃主题
+
+##### DWS：统计当日，当周，当月活动的每个设备明细
+
+~~~sql
+--1，每日活跃明细
+select * 
+from dwd_start_log
+where dt = ''
+group by mid_id;
+
+--2，每周活跃明细
+select * 
+from dws_uv_detail_day
+where dt >= date_add(next_day('','mo'),-7)
+and dt <= date_add(next_day('','mo'),-1)
+group by mid;
+
+--3，每月活跃明细
+select * 
+from dwd_uv_detail_day
+where dt >= date_add(next_day('','mo'),-7) -- 这个月的第一天怎么写？
+and dt <= last_day('')
+group by mid;
+
+
+~~~
+
+##### ADS：统计当日，当周，当月活动数量
+
+~~~SQL
+
+~~~
+
+
+
+#### 需求2：用户新增
+
+首次联网使用的用户，一个用户首次打开某个APP，那个这个用户定义为新增用户
+
+
+
+
+
+
+
+
+
+
+
+
+
+~~~sql 
+select dept_id,
+sum(case sex when '男' then 1 else 0 end) male,
+sum(case sex when '女' then 1 else 0 end) female
+from emp_sex
+group by dept_id;
+
+select concat(constellation,",",blood_type),
+concat_ws('|',collect_set(name))
+from person_info
+group by constellation,blood_type;
+
+
+select movie,category_name
+from movie_info lateral view explode(category) table_tmp as category_name;
+~~~
+
+
+
+看了你的来信，读了好多遍，然后发现了一个错别字，哈哈。然后还有好多问题，什么叫做“你给我的感觉我很棒”和什么是“暖暖的感觉呢？”  和你确定关系的四个月的时间里，确实过的还是蛮开心的，这或许是因为你的存在，或者是你存在了我的心里，或者是你存在我深深的脑海里。
+
+不知道我在你的心里是什么样子的，你在我心里越来越重要，越来越不可替代，也越来越无法割舍。你害羞的时候总是那么迷人，不经意的表情和动作也总是那么娇滴滴的，我曾经以为爱上一个人仿佛就是有了软肋，现在才知道爱上一个对的人一种幸福和享受，才知道爱上你是一种幸运，是蝴蝶对于花儿的眷恋和驻足，想起你的时候，就是在爱你，爱你的时候总会想起你，这仿佛就像王小波所说的爱你就像爱生命。
+
+每天早上快要醒但是还是没有起来的时候，你总是跑到我的脑子里，抱着被子的时候，感觉像是在抱着你，有时候觉得见你一次，抱你一次，我好难。
+
+总之，谢谢你的爱。
+
+
+
+
+
+
+
+
+
+
+
+
+
