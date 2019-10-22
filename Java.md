@@ -849,7 +849,26 @@ class MyCallable03 implements Callable<Integer>{
 
 ThreadLocal是一个关于创建线程局部变量的类。我们创建的变量是可以被任何一个线程访问并修改的。而使用ThreadLocal创建的变量只能被当前线程访问，其他线程则无法访问和修改。
 
-该对象是放在了堆中还是栈中？堆中，只是通过了一些手段来将可见性改变为线程可见。
+该对象是放在了堆中还是栈中？堆中，只是通过了一些手段来将**可见性**改变为线程可见。
+
+~~~java 
+public class ThreadLocalCase {
+    private final static Logger logger = LoggerFactory.getLogger(ThreadLocalCase.class);
+    static ThreadLocal<String> local = new ThreadLocal<>();
+
+    public static void main(String[] args) {
+        local.set("good");
+        new Thread(() ->
+            logger.info(local.get())
+        ).start();
+        logger.info(local.get());
+    }
+}
+/**
+ * 65 [main] INFO com.isea.clitoris.classes.ThreadLocalCase - good
+ * 65 [Thread-0] INFO com.isea.clitoris.classes.ThreadLocalCase - null
+ */
+~~~
 
 ### Error和Exception
 
@@ -1193,6 +1212,22 @@ IO一是软件开发的核心部分，随着海量数据的增长和分布式系
 
 ![](img/java/11.png)
 
+| 输入流 | Output         |
+| ------ | -------------- |
+| 输出流 | Input          |
+| 字节流 | Stream         |
+| 字符流 | Reader，Writer |
+
+~~~java 
+// 读取文件
+FileInuptStream in new FileInputStream("c:/xxx.txt")
+
+// 提升性能    
+BufferInputedStream buffin =  new BufferedInputStream(in)    
+    
+    
+~~~
+
 
 
 ```SQL
@@ -1201,6 +1236,10 @@ IO一是软件开发的核心部分，随着海量数据的增长和分布式系
 Select area,click_product_id, clickcount from (select *, rank() over(partition by area order by clickcount desc) rk from result2) tmp
 where rk <= 3 
 ```
+
+
+
+
 
 ### BIO
 
