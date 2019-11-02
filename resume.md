@@ -1,55 +1,41 @@
-### 							Resume
+### 					 大数据工程师											
 
 #### 个人信息
 
-| 姓名 | 谢海龙             |
-| ---- | ------------------ |
-| 电话 | 13126505729        |
-| 出生 | 1996 /10 /09       |
-| 邮箱 | ifseayou@gmail.com |
+**姓	    名**：谢海龙								**性        别**：男<br>**年        龄**：24								**籍        贯**：河南信阳<br>**工作经验**：3年								**教育背景**：辽宁工程技术大学(本一)，网络工程<br>**电        话**：13126505729						**邮        箱**：ifseayou@gmail.com<br>
 
 #### 求职方向
 
-大数据研发  薪资：面议
-
-#### 教育背景
-
-本科一批，辽宁工程技术大学，软件学院，网络工程专业
+**从事岗位：**大数据研发工程师					**期望薪资**：面议
 
 #### 工作经验
 
-2017年9月至今 **  大数据研发                                                                                                                                                                                               
+2017年9月至今 **  `大数据研发`                                                                                                                                                                                               
 
 #### 技能栈
 
-:one: 熟练使用Java， Scala ，掌握Python，Shell，熟悉JVM，了解JVM调优；
+:one: 熟练使用Java、Scala ，掌握Python，Shell，熟悉JVM，了解JVM调优；
 
-:two: 掌握关系型数据MySQL 、NoSQL数据库`Redis`，MongoDB，ES；
+:two: 掌握关系型数据MySQL 、内存数据库`Redis`，文档数据库MongoDB，ES，时序库`InfluxDB`；
 
 :three: 掌握常见大数据框架：
 
-* 理解**Spark**架构，Spark 作业提交流程（翻过源码）；熟练掌握常见RDD的算子；<br>熟练使用Spark-SQL完成数据统计，查询，清洗；熟练掌握Spark Streaming，Spark Core；<br>掌握常见Spark的调优策略，了解`Spark-MLlib`；
-
+* 理解**Spark**架构、原理、Spark 作业提交流程（翻过源码）；熟练掌握常见RDD算子；<br>熟练使用Spark-SQL完成数据统计，查询，清洗；熟练掌握Spark Streaming，Spark Core；<br>掌握常见Spark的调优策略，了解`Spark-MLlib`；
 * 掌握**HDFS**读写流程，MR Shuffle机制，**YARN **Job提交流程；熟悉**Hadoop**常见调优策略；<br>熟练掌握Hadoop分布式集群的安装，部署，配置和测试，熟悉Hadoop生态圈的应用开发；
-* 掌握**Hive**架构，熟练使用HQL语句完成数据的统计、查询、清洗等，掌握常见Hive调优手段，掌握**Impala**和**`Kylin` **完成即席查询；
-
+* 掌握**Hive**架构，熟练掌握窗口函数、UDF、UDTF、UDAF，熟练运用HQL语句完成数据的统计、查询、清洗等，掌握常见Hive调优手段；掌握**Impala**和**`Kylin` **；
 * 熟悉**Flume**的Source，Channel，Sink组件，及组件的常用类型，及其类型适配 ；
-
-* 理解消息订阅模型，掌握**Kafka**架构、工作流程、底层实现机制；<br>熟练使用Kafka Client ，Stream 实现数据高吞吐的处理；了解Kafka Connect数据管道；
-
+* 理解消息订阅模型，掌握**Kafka**架构、工作流、高吞吐原理、存储机制；<br>熟练使用Kafka Producer、Consumer、Stream 实现数据高吞吐的处理；了解Kafka Connect数据管道；
 * 熟练使用**`Sqoop`**完成数据的导入导出；熟悉**Azkaban**完成作业调度；
-
-* 掌握**Zookeeper**运行原理和机制，并借助Zookeeper实现集群框架的高可用；
-
+* 理解**Zookeeper**运行原理及分布式锁概念 ，掌握Zookeeper集群部署实现高可用；
 * 熟悉**`HBase`**设计理念和架构，掌握`HBase`读写过程，掌握`Rowkey`的设计原则，掌握常见`HBase`优化方式；
 
-:four: 掌握**`SpringMVC`、Spring、`Mybatis`**等Web框架；了解**Spring Boot、Spring Cloud**微服务框架；
+:four: 掌握**`SpringMVC`、Spring、`Mybatis`**等Web框架；熟悉**Spring Boot、Spring Cloud**微服务框架；
 
-:five: 掌握基本算法和数据结构；熟悉常见机器学习算法
+:five: 掌握基本的算法和数据结构；熟悉常见机器学习算法
 
-:six: 对推荐系统有一定了解，如User-CF，Item-CF，TF-IDF，CB，LFM等；
+:six: 了解推荐系统，如User-CF，Item-CF，TF-IDF，CB，LFM等；
 
-:seven: 熟悉Windows和类Unix操作系统，掌握 `Git`，Maven，IDEA等常用开发工具
+:seven: 掌握Windows和Linux环境，掌握 `Git`，Maven，IDEA等常用开发工具完成个人或协作开发；
 
 #### 语言&社区
 
@@ -57,9 +43,9 @@
 
 **口语** ：能满足基本英语口语交流与沟通。
 
-**社区经历**：GitHub: https://github.com/ifseayou
+**社区经历**：GitHub: https://github.com/ifseayou Blog：
 
-### 项目
+#### 项目
 
 **项目1：基于用户行为的个性化电影推荐系统**
 
