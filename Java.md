@@ -574,12 +574,19 @@ public class LearnStream {
 
 #### 元注解
 
-Java5.0，java.lang.annotation包定义了4个标准的meta-annotation类型，它们被用来提供对其它 annotation类型作说明。
+Java5.0，`java.lang.annotation`包定义了4个标准的meta-annotation类型，它们被用来提供对其它 annotation类型作说明。
 
-* @Target
-* @Retention
-* @Documented
-* @Inherited
+~~~java
+- @Target
+- @Retention
+- @Documented
+- @Inherited
+    
+// 举个例子
+@Documented // @Documented是否生成文档的标注, 也就是生成接口文档, 是否生成注解文档
+@Retention(RetentionPolicy.RUNTIME)  // 注解表示的是本注解(标注这个注解的注解保留时期)
+@Target(ElementType.METHOD)  // @Target注解是标注这个类它可以标注的位置,常用的元素类型(ElementType)
+~~~
 
 ### 枚举
 

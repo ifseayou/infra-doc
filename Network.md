@@ -1,8 +1,12 @@
-# Computer&Network 
+# 计算机网络
+
+鄙人专业是：网络工程，但是网络的知识忘得真TM干净。
+
+
 
 ## 问题记录：
 
-我的虚拟机主机名是：hadoop104，对应的IP地址是 192.168.1.104，平时使用`xshell`去连接的时候，完全没有什么问题，但是当我把电脑待会宿舍的时候，发现怎么也连接不上了，针对这个问题，我怀疑是IP地址冲突了，然后我查看了我本地的IP地址，发现本机的IP地址竟然也是192.168.1.104。然后我对本机执行了
+我的虚拟机主机名是：hadoop104，对应的IP地址是 192.168.1.104，平时使用`xshell`去连接的时候，完全没有什么问题，但是当我把电脑带回宿舍的时候，发现怎么也连接不上了，针对这个问题，我怀疑是IP地址冲突了，然后我查看了我本地的IP地址，发现本机的IP地址竟然也是192.168.1.104。然后我对本机执行了
 
 ~~~shell
 ipconfig/release # 释放本机从DHCP地址池获取的IP
@@ -18,7 +22,7 @@ ipconfig/release # 释放本机从DHCP地址池获取的IP
 ipconfig/renew 
 ~~~
 
-发现获取的IP地址还是192.168.1.104，是因为路由器设置了IP-MAC地址绑定的缘故。不过既然Xshell已经连接上了虚拟主机，也就不管那么多了。
+发现获取的IP地址还是192.168.1.104，是因为路由器设置了IP-MAC地址绑定的缘故。不过既然`Xshell`已经连接上了虚拟主机，也就不管那么多了。
 
 ### CMD客户端的乱码：
 
@@ -217,64 +221,4 @@ WebSocket 则是一个典型的应用层协议。
 总的来说：Socket 是传输控制层协议，WebSocket 是应用层协议。
 
 
-
-## REST：表现层状态转换
-
-Web API？
-
-如果我们想要获取某个电商网站的某个商品，输入`http://localhost:3000/products/123`，就可以看到id为123的商品页面，但这个结果是HTML页面，它同时混合包含了Product的数据和Product的展示两个部分。对于用户来说，阅读起来没有问题，但是，如果机器读取，就很难从HTML中解析出Product的数据。
-
-如果一个URL返回的不是HTML，而是机器能直接解析的数据，这个URL就可以看成是一个Web API。比如，读取`http://localhost:3000/api/products/123`，如果能直接返回Product的数据，那么机器就可以直接读。REST就是一种设计API的模式。最常用的数据格式是JSON。由于JSON能直接被JavaScript读取，所以，以JSON格式编写的REST风格的API具有简单、易读、易用的特点。
-
-编写API有什么好处呢？由于API就是把Web App的功能全部封装了，所以，通过API操作数据，可以极大地把前端和后端的代码隔离，使得后端代码易于测试，前端代码编写更简单。此外，如果我们把前端页面看作是一种用于展示的客户端，那么API就是为客户端提供数据、操作数据的接口。这种设计可以获得极高的扩展性。例如，当用户需要在手机上购买商品时，只需要开发针对iOS和Android的两个客户端，通过客户端访问API，就可以完成通过浏览器页面提供的功能，而后端代码基本无需改动。当一个Web应用以API的形式对外提供功能时，整个应用的结构就扩展为：
-
-![](img/net/2.png)
-
-编写**REST API**，实际上就是编写处理HTTP请求的async函数，不过，REST请求和普通的HTTP请求有几个特殊的地方：
-
-:one: REST请求仍然是标准的HTTP请求，但是，除了GET请求外，POST、PUT等请求的body是JSON数据格式，请求的`Content-Type`为`application/json`；
-
-:two: REST响应返回的结果是JSON数据格式，因此，响应的`Content-Type`也是`application/json`。
-
-REST规范定义了资源的通用访问格式，虽然它不是一个强制要求，但遵守该规范可以让人易于理解。例如，商品Product就是一种资源。**获取所有Product的URL**如下：
-
-```shell
-GET /api/products
-```
-
-**而获取某个指定的Product**，例如，id为`123`的Product，其URL如下：
-
-```
-GET /api/products/123
-```
-
-**新建一个Product使用POST请求**，JSON数据包含在body中，URL如下：
-
-```
-POST /api/products
-```
-
-**更新一个Product使用PUT请求**，例如，更新id为`123`的Product，其URL如下：
-
-```
-PUT /api/products/123
-```
-
-**删除一个Product使用DELETE请求**，例如，删除id为`123`的Product，其URL如下：
-
-```
-DELETE /api/products/123
-```
-
-**资源还可以按层次组织**。例如，获取某个Product的所有评论，使用：
-
-```
-GET /api/products/123/reviews
-```
-
-当我们只需要**获取部分数据时，可通过参数限制返回的结果集**，例如，返回第2页评论，每页10项，按时间排序：
-
-```
-GET /api/products/123/reviews?page=2&size=10&sort=time
-```
 

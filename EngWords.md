@@ -32,6 +32,11 @@ coalease # 合并
 aggregate  # 合计v,
 
 Telemetry # 遥测
+
+Untracked # 未追踪
+unstage # 为暂存 
+
+mercurial # 水银
 ~~~
 
 
